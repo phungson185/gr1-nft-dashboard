@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { AppContainer } from 'containers';
+import { default as jwtDecode } from 'jwt-decode';
+import { PrivateLayout } from 'layouts';
+import { useEffect, useState } from 'react';
+import { Provider as ReduxProvider } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { store } from 'reducers';
+import { signIn } from 'reducers/profile';
+import { walletService } from 'services';
 
-function App() {
+const App = () => {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    try {
+      const profile = JSON.parse(localStorage.getItem('profile')!);
+      jwtDecode(profile.accessToken);
+      store.dispatch(signIn(profile));
+      walletService.connectProvider();
+    } catch {
+    } finally {
+      setIsReady(true);
+    }
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ReduxProvider store={store}>
+      <AppContainer>
+        <BrowserRouter>
+          {isReady && (
+            <Routes>
+              <Route path='/*' element={<PrivateLayout />} />
+            </Routes>
+          )}
+        </BrowserRouter>
+      </AppContainer>
+    </ReduxProvider>
   );
-}
+};
 
 export default App;

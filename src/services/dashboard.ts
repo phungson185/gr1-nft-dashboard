@@ -6,7 +6,7 @@ const fetchSystem = (): Promise<SystemType> => client.get(`/api/system`);
 const updateSystem = ({ id, nftContractAddress }: SystemUpdateType) =>
   client.put(`/api/system/${id}?nftContractAddress=${nftContractAddress}`);
 const fetchUsers = (params?: UserPaginateParams): Promise<UserPaginateType> => client.get(`/api/users`, { params });
-const updateUser = ({ id, ...params }: UpdateUserParams) => client.put(`/api/users/${id}`, { params });
+const updateUser = ({ id, ...body }: UpdateUserParams) => client.put(`/api/users/${id}`, body);
 
 export default {
   fetchSystem,

@@ -32,7 +32,9 @@ const Dashboard = () => {
     setIsDisabled(!value);
   };
 
-  const { data, isFetching, refetch } = useQuery(['dashboardService.fetchUsers'], () => dashboardService.fetchUsers(dataSearch));
+  const { data, isFetching, refetch } = useQuery(['dashboardService.fetchUsers', dataSearch], () =>
+    dashboardService.fetchUsers(dataSearch),
+  );
   const { items = [], total, currentPage, pages: totalPage } = data ?? {};
 
   const { mutate: updateSystem, isLoading } = useMutation(dashboardService.updateSystem, {
@@ -96,15 +98,16 @@ const Dashboard = () => {
                     <Switch
                       checked={user.isAdmin}
                       onClick={() => {
-                        updateUser({ id: user.id, isAdmin: !user.isAdmin, deactivated: !user.deactivated });
+                        updateUser({ id: user.id, isAdmin: !user.isAdmin });
                       }}
                     />
                   </TableCell>
                   <TableCell className='text-center'>
                     <Switch
+                      color='error'
                       checked={user.deactivated}
                       onClick={() => {
-                        updateUser({ id: user.id, isAdmin: !user.isAdmin, deactivated: !user.deactivated });
+                        updateUser({ id: user.id, deactivated: !user.deactivated });
                       }}
                     />
                   </TableCell>

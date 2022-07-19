@@ -14,6 +14,7 @@ import {
 import { Spinner, TableRowEmpty } from 'components';
 import Container from 'containers/Container';
 import { useSearch } from 'hooks';
+import { useSnackbar } from 'notistack';
 import { useState } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { useSelector } from 'react-redux';
@@ -22,6 +23,7 @@ import { dashboardService, queryClient } from 'services';
 
 const Dashboard = () => {
   const [isDisabled, setIsDisabled] = useState(true);
+  const { enqueueSnackbar } = useSnackbar();
 
   const [value, setValue] = useState('');
   const { id, nftContractAddress } = useSelector(systemSelector);
@@ -39,6 +41,7 @@ const Dashboard = () => {
 
   const { mutate: updateSystem, isLoading } = useMutation(dashboardService.updateSystem, {
     onSuccess: () => {
+      enqueueSnackbar('Update system successfully', { variant: 'success' });
       setIsDisabled(true);
     },
   });

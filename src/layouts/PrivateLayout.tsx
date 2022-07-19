@@ -15,7 +15,7 @@ const PrivateLayout = () => {
   const { isMobile } = useWindowSize();
   const { isLoggedIn } = useSelector(profileSelector);
 
-  useQuery('dashboardService.fetchSystem', () => dashboardService.fetchSystem(), {
+  const { isSuccess } = useQuery('dashboardService.fetchSystem', () => dashboardService.fetchSystem(), {
     onSuccess: (data) => {
       dispatch(saveSystem(data));
     },
@@ -27,12 +27,14 @@ const PrivateLayout = () => {
         <AppHeader />
         <div className='sm:px-6 px-4 py-4 pt-10'>
           {isLoggedIn ? (
-            <Routes>
-              {Object.values(privateRoute).map(({ path, element }) => (
-                <Route key={path} path={path} element={element} />
-              ))}
-              <Route path='/*' element={<Navigate to={privateRoute.serverStatistics.path} />} />
-            </Routes>
+            isSuccess && (
+              <Routes>
+                {Object.values(privateRoute).map(({ path, element }) => (
+                  <Route key={path} path={path} element={element} />
+                ))}
+                <Route path='/*' element={<Navigate to={privateRoute.serverStatistics.path} />} />
+              </Routes>
+            )
           ) : (
             <div className='flex justify-center p-10'>
               <Button variant='contained' size='large' onClick={() => walletService.connectWallet()}>

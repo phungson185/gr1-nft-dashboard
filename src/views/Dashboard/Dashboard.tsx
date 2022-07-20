@@ -34,7 +34,7 @@ const Dashboard = () => {
     setIsDisabled(!value);
   };
 
-  const { data, isFetching, refetch } = useQuery(['dashboardService.fetchUsers', dataSearch], () =>
+  const { data, isFetching, refetch, isError } = useQuery(['dashboardService.fetchUsers', dataSearch], () =>
     dashboardService.fetchUsers(dataSearch),
   );
   const { items = [], total, currentPage, pages: totalPage } = data ?? {};
@@ -60,25 +60,27 @@ const Dashboard = () => {
   return (
     <>
       <Container>
-        <div className='flex items-center gap-5'>
-          <TextField
-            id='outlined-basic'
-            label='Contract Address'
-            variant='outlined'
-            defaultValue={nftContractAddress}
-            onChange={handleChange}
-          />
-          <LoadingButton
-            className='text-sm'
-            variant='contained'
-            color='primary'
-            disabled={isDisabled}
-            onClick={handleClick}
-            loading={isLoading}
-          >
-            Update
-          </LoadingButton>
-        </div>
+        {!isError && (
+          <div className='flex items-center gap-5'>
+            <TextField
+              id='outlined-basic'
+              label='Contract Address'
+              variant='outlined'
+              defaultValue={nftContractAddress}
+              onChange={handleChange}
+            />
+            <LoadingButton
+              className='text-sm'
+              variant='contained'
+              color='primary'
+              disabled={isDisabled}
+              onClick={handleClick}
+              loading={isLoading}
+            >
+              Update
+            </LoadingButton>
+          </div>
+        )}
       </Container>
 
       <TableContainer component={Paper}>
